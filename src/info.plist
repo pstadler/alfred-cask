@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>pstadler/alfred-cask</string>
+	<key>connections</key>
+	<dict>
+		<key>4C3CDB74-D2A9-4D1A-A766-D30B2383CD8A</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>B718BDC0-8149-4EF2-A7FA-0B2F93BE9DA8</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+		<key>6857F82A-8D39-4F61-BD4F-1FA51E550B48</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>4C3CDB74-D2A9-4D1A-A766-D30B2383CD8A</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>887202DD-07A7-4568-8BE8-580D3CA8C3B3</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>59C16933-6AD5-4261-AAB4-8996988E9E2D</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Open homepage in browser</string>
+			</dict>
+		</array>
+		<key>887202DD-07A7-4568-8BE8-580D3CA8C3B3</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>E4DE31E1-079E-4992-88A8-1568E129E671</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Patrick Stadler</string>
+	<key>description</key>
+	<string>Manage applications with homebrew-cask</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Cask</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>output</key>
+				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+				<key>text</key>
+				<string>You'll get notified when done.</string>
+				<key>title</key>
+				<string>{query}</string>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>B718BDC0-8149-4EF2-A7FA-0B2F93BE9DA8</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+PATH=/usr/local/homebrew/bin:$PATH
+
+query="{query}"
+
+installed_casks=$(brew cask list|sed -e 's/^[ \t]*/ /')
+
+if [[ $installed_casks =~ (^|[[:space:]])$query($|[[:space:]]) ]]; then
+	echo Uninstalling $query
+else 
+	echo Installing $query
+fi
+
+exit 0</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>4C3CDB74-D2A9-4D1A-A766-D30B2383CD8A</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>keyword</key>
+				<string>cask</string>
+				<key>runningsubtext</key>
+				<string>Searching for casks...</string>
+				<key>script</key>
+				<string>#!/bin/bash
+
+PATH=/usr/local/homebrew/bin:$PATH
+
+query="{query}"
+
+results=$(brew cask search "$query")
+installed_casks=$(brew cask list | sed -e 's/^[ \t]*/ /')
+
+out=""; count=0
+for cask in $results; do
+	count=$((count+1))
+	if [ $count -gt 20 ]; then break; fi
+
+	title=$cask
+	subtitle="Install cask"
+	icon="icon-install.png"
+	if [[ $installed_casks =~ (^|[[:space:]])$cask($|[[:space:]]) ]]; then
+		title="$title [installed]" #✓
+		subtitle="Uninstall cask"
+		icon="icon-uninstall.png"
+	fi
+
+    out+="&lt;item arg=\"$cask\" uid=\"cask-$(date +%s)\" valid=\"yes\"&gt;\
+            &lt;title&gt;$title&lt;/title&gt;\
+            &lt;subtitle&gt;$subtitle (⌘+enter to open homepage)&lt;/subtitle&gt;\
+            &lt;icon&gt;$icon&lt;/icon&gt;\
+        &lt;/item&gt;"
+done
+
+echo "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;items&gt;$out&lt;/items&gt;"
+exit 0</string>
+				<key>subtext</key>
+				<string>Manage applications with homebrew-cask</string>
+				<key>title</key>
+				<string>Cask</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>6857F82A-8D39-4F61-BD4F-1FA51E550B48</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+PATH=/usr/local/homebrew/bin:$PATH
+
+query="{query}"
+
+sleep 2
+
+installed_casks=$(brew cask list|sed -e 's/^[ \t]*/ /')
+
+if [[ $installed_casks =~ (^|[[:space:]])$query($|[[:space:]]) ]]; then
+	brew cask uninstall $query &gt; /dev/null
+	if [ $? -eq 0 ]; then
+		echo ✓ $query has been uninstalled
+		exit 0
+	fi
+
+	echo ✗ failed to uninstall $query
+	exit 0
+fi
+
+brew cask install $query &gt; /dev/null
+if [ $? -eq 0 ]; then
+	echo ✓ $query has been installed
+	exit 0
+fi
+
+echo ✗ failed to install $query
+exit 0</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>887202DD-07A7-4568-8BE8-580D3CA8C3B3</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>lastpathcomponent</key>
+				<false/>
+				<key>onlyshowifquerypopulated</key>
+				<true/>
+				<key>output</key>
+				<integer>0</integer>
+				<key>removeextension</key>
+				<false/>
+				<key>sticky</key>
+				<false/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.output.notification</string>
+			<key>uid</key>
+			<string>E4DE31E1-079E-4992-88A8-1568E129E671</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>escaping</key>
+				<integer>127</integer>
+				<key>script</key>
+				<string>#!/bin/bash
+
+PATH=/usr/local/homebrew/bin:$PATH
+
+query="{query}"
+
+brew cask home $query
+
+exit 0</string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>59C16933-6AD5-4261-AAB4-8996988E9E2D</string>
+			<key>version</key>
+			<integer>0</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string></string>
+	<key>uidata</key>
+	<dict>
+		<key>4C3CDB74-D2A9-4D1A-A766-D30B2383CD8A</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>59C16933-6AD5-4261-AAB4-8996988E9E2D</key>
+		<dict>
+			<key>ypos</key>
+			<real>250</real>
+		</dict>
+		<key>6857F82A-8D39-4F61-BD4F-1FA51E550B48</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
+		<key>887202DD-07A7-4568-8BE8-580D3CA8C3B3</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
+		<key>B718BDC0-8149-4EF2-A7FA-0B2F93BE9DA8</key>
+		<dict>
+			<key>ypos</key>
+			<real>10</real>
+		</dict>
+		<key>E4DE31E1-079E-4992-88A8-1568E129E671</key>
+		<dict>
+			<key>ypos</key>
+			<real>130</real>
+		</dict>
+	</dict>
+	<key>webaddress</key>
+	<string>https://github.com/pstadler/alfred-cask</string>
+</dict>
+</plist>
