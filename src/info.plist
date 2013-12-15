@@ -99,19 +99,7 @@
 				<key>script</key>
 				<string>#!/bin/bash
 
-PATH=/usr/local/homebrew/bin:$PATH
-
-query="{query}"
-
-installed_casks=$(brew cask list|sed -e 's/^[ \t]*/ /')
-
-if [[ $installed_casks =~ (^|[[:space:]])$query($|[[:space:]]) ]]; then
-	echo Uninstalling $query
-else 
-	echo Installing $query
-fi
-
-exit 0</string>
+sh cask.sh notify "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -136,36 +124,7 @@ exit 0</string>
 				<key>script</key>
 				<string>#!/bin/bash
 
-PATH=/usr/local/homebrew/bin:$PATH
-
-query="{query}"
-
-results=$(brew cask search "$query")
-installed_casks=$(brew cask list | sed -e 's/^[ \t]*/ /')
-
-out=""; count=0
-for cask in $results; do
-	count=$((count+1))
-	if [ $count -gt 20 ]; then break; fi
-
-	title=$cask
-	subtitle="Install cask"
-	icon="icon-install.png"
-	if [[ $installed_casks =~ (^|[[:space:]])$cask($|[[:space:]]) ]]; then
-		title="$title [installed]" #✓
-		subtitle="Uninstall cask"
-		icon="icon-uninstall.png"
-	fi
-
-    out+="&lt;item arg=\"$cask\" uid=\"cask-$(date +%s)\" valid=\"yes\"&gt;\
-            &lt;title&gt;$title&lt;/title&gt;\
-            &lt;subtitle&gt;$subtitle (⌘+enter to open homepage)&lt;/subtitle&gt;\
-            &lt;icon&gt;$icon&lt;/icon&gt;\
-        &lt;/item&gt;"
-done
-
-echo "&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;&lt;items&gt;$out&lt;/items&gt;"
-exit 0</string>
+sh cask.sh list "{query}"</string>
 				<key>subtext</key>
 				<string>Manage applications with homebrew-cask</string>
 				<key>title</key>
@@ -190,33 +149,7 @@ exit 0</string>
 				<key>script</key>
 				<string>#!/bin/bash
 
-PATH=/usr/local/homebrew/bin:$PATH
-
-query="{query}"
-
-sleep 2
-
-installed_casks=$(brew cask list|sed -e 's/^[ \t]*/ /')
-
-if [[ $installed_casks =~ (^|[[:space:]])$query($|[[:space:]]) ]]; then
-	brew cask uninstall $query &gt; /dev/null
-	if [ $? -eq 0 ]; then
-		echo ✓ $query has been uninstalled
-		exit 0
-	fi
-
-	echo ✗ failed to uninstall $query
-	exit 0
-fi
-
-brew cask install $query &gt; /dev/null
-if [ $? -eq 0 ]; then
-	echo ✓ $query has been installed
-	exit 0
-fi
-
-echo ✗ failed to install $query
-exit 0</string>
+sh cask.sh execute "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -240,6 +173,8 @@ exit 0</string>
 				<false/>
 				<key>sticky</key>
 				<false/>
+				<key>title</key>
+				<string>{query}</string>
 			</dict>
 			<key>type</key>
 			<string>alfred.workflow.output.notification</string>
@@ -256,13 +191,7 @@ exit 0</string>
 				<key>script</key>
 				<string>#!/bin/bash
 
-PATH=/usr/local/homebrew/bin:$PATH
-
-query="{query}"
-
-brew cask home $query
-
-exit 0</string>
+sh cask.sh home "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
