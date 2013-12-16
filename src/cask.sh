@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PATH=/usr/local/homebrew/bin:$PATH
+PATH=/usr/local/bin:/usr/local/homebrew/bin:$PATH
 
 action=$1
 query=$2
