@@ -47,7 +47,7 @@ case "$action" in
 	;;
 
 	list)
-		results=$(brew cask search "$query" | grep "^[^=]")
+		results=$(brew cask search "$query" | egrep -v "(^=|^No cask found for)")
 		installed_casks
 
 		out=""; count=0
