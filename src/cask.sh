@@ -47,7 +47,7 @@ case "$action" in
 	;;
 
 	list)
-		results=$(brew cask search "$query")
+		results=$(brew cask search "$query" | grep "^[^=]")
 		installed_casks
 
 		out=""; count=0
