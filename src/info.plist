@@ -97,9 +97,7 @@
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>#!/bin/bash
-
-sh cask.sh notify "{query}"</string>
+				<string>./cask.sh notify "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -122,9 +120,7 @@ sh cask.sh notify "{query}"</string>
 				<key>runningsubtext</key>
 				<string>Searching for casks...</string>
 				<key>script</key>
-				<string>#!/bin/bash
-
-sh cask.sh list "{query}"</string>
+				<string>./cask.sh list "{query}"</string>
 				<key>subtext</key>
 				<string>Manage applications with homebrew-cask</string>
 				<key>title</key>
@@ -147,9 +143,7 @@ sh cask.sh list "{query}"</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>#!/bin/bash
-
-sh cask.sh execute "{query}"</string>
+				<string>./cask.sh execute "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
@@ -189,9 +183,7 @@ sh cask.sh execute "{query}"</string>
 				<key>escaping</key>
 				<integer>127</integer>
 				<key>script</key>
-				<string>#!/bin/bash
-
-sh cask.sh home "{query}"</string>
+				<string>./cask.sh home "{query}"</string>
 				<key>type</key>
 				<integer>0</integer>
 			</dict>
