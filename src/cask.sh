@@ -1,5 +1,12 @@
 #!/bin/bash
 
+if [ -f ~/.bash_profile ]; then
+	source ~/.bash_profile
+fi
+if [ -f ~/.profile ]; then
+	source ~/.profile
+fi
+
 PATH=/usr/local/bin:/usr/local/homebrew/bin:$PATH
 
 action=$1
